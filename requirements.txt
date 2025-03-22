@@ -1,12 +1,12 @@
 # LITELLM PROXY DEPENDENCIES #
 anyio==4.4.0 # openai + http req.
 httpx==0.27.0 # Pin Httpx dependency
-openai==1.66.1  # openai req. 
+openai==1.68.2  # openai req. 
 fastapi==0.115.5 # server dep
 backoff==2.2.1 # server dep
 pyyaml==6.0.2 # server dep
 uvicorn==0.29.0 # server dep
-gunicorn==22.0.0 # server dep
+gunicorn==23.0.0 # server dep
 uvloop==0.21.0 # uvicorn dep, gives us much better performance under load
 boto3==1.34.34 # aws bedrock/sagemaker calls
 redis==5.0.0 # caching
@@ -50,5 +50,5 @@ aioboto3==12.3.0 # for async sagemaker calls
 tenacity==8.2.3  # for retrying requests, when litellm.num_retries set
 pydantic==2.10.0 # proxy + openai req.
 jsonschema==4.22.0 # validating json schema
-websockets==10.4 # for realtime API
+websockets==13.1.0 # for realtime API
 ####

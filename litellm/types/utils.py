@@ -18,7 +18,7 @@ from openai.types.moderation import (
     CategoryScores,
 )
 from openai.types.moderation_create_response import Moderation, ModerationCreateResponse
-from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
 from typing_extensions import Callable, Dict, Required, TypedDict, override
 
 import litellm
@@ -1625,13 +1625,16 @@ class StandardLoggingAdditionalHeaders(TypedDict, total=False):
 
 
 class StandardLoggingHiddenParams(TypedDict):
-    model_id: Optional[str]
+    model_id: Optional[
+        str
+    ]  # id of the model in the router, separates multiple models with the same name but different credentials
     cache_key: Optional[str]
     api_base: Optional[str]
     response_cost: Optional[str]
     litellm_overhead_time_ms: Optional[float]
     additional_headers: Optional[StandardLoggingAdditionalHeaders]
     batch_models: Optional[List[str]]
+    litellm_model_name: Optional[str]  # the model name sent to the provider by litellm
 
 
 class StandardLoggingModelInformation(TypedDict):
@@ -1762,6 +1765,10 @@ class StandardCallbackDynamicParams(TypedDict, total=False):
 
     # Humanloop dynamic params
     humanloop_api_key: Optional[str]
+
+    # Arize dynamic params
+    arize_api_key: Optional[str]
+    arize_space_key: Optional[str]
 
     # Logging settings
     turn_off_message_logging: Optional[bool]  # when true will not log messages
@@ -1967,6 +1974,7 @@ class LlmProviders(str, Enum):
     HUMANLOOP = "humanloop"
     TOPAZ = "topaz"
     ASSEMBLYAI = "assemblyai"
+    SNOWFLAKE = "snowflake"
 
 
 # Create a set of all provider values for quick lookup
@@ -2052,7 +2060,22 @@ class RawRequestTypedDict(TypedDict, total=False):
     error: Optional[str]
 
 
-class CredentialItem(BaseModel):
+class CredentialBase(BaseModel):
     credential_name: str
-    credential_values: dict
     credential_info: dict
+
+
+class CredentialItem(CredentialBase):
+    credential_values: dict
+
+
+class CreateCredentialItem(CredentialBase):
+    credential_values: Optional[dict] = None
+    model_id: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def check_credential_params(cls, values):
+        if not values.get("credential_values") and not values.get("model_id"):
+            raise ValueError("Either credential_values or model_id must be set")
+        return values
