@@ -224,28 +224,45 @@ const PROVIDER_CREDENTIAL_FIELDS: Record<Providers, ProviderCredentialField[]> =
     {
       key: "aws_access_key_id",
       label: "AWS Access Key ID",
-      required: true,
+      type: "password",
+      required: false,
       tooltip: "You can provide the raw key or the environment variable (e.g. `os.environ/MY_SECRET_KEY`)."
     },
     {
       key: "aws_secret_access_key",
       label: "AWS Secret Access Key",
-      required: true,
+      type: "password",
+      required: false,
       tooltip: "You can provide the raw key or the environment variable (e.g. `os.environ/MY_SECRET_KEY`)."
     },
     {
       key: "aws_region_name",
       label: "AWS Region Name",
       placeholder: "us-east-1",
-      required: true,
+      required: false,
       tooltip: "You can provide the raw key or the environment variable (e.g. `os.environ/MY_SECRET_KEY`)."
     }
   ],
-  [Providers.Ollama]: [], // No specific fields needed
+  [Providers.Ollama]: [
+    {
+      key: "api_base",
+      label: "API Base",
+      placeholder: "http://localhost:11434",
+      defaultValue: "http://localhost:11434",
+      required: false,
+      tooltip: "The base URL for your Ollama server. Defaults to http://localhost:11434 if not specified."
+    }
+  ],
   [Providers.Anthropic]: [{
     key: "api_key",
     label: "API Key",
     placeholder: "sk-",
+    type: "password",
+    required: true
+  }],
+  [Providers.Deepgram]: [{
+    key: "api_key",
+    label: "API Key",
     type: "password",
     required: true
   }],

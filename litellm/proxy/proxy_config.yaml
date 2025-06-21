@@ -1,10 +1,18 @@
 model_list:
-  - model_name: openai/gpt-4o
+  - model_name: gemini/*
     litellm_params:
-      model: openai/gpt-4o
-      api_key: os.environ/OPENAI_API_KEY
+      model: gemini/*
+      api_key: os.environ/GEMINI_API_KEY
+  - model_name: "anthropic/*"
+    litellm_params:
+      model: "anthropic/*"
+      api_key: os.environ/ANTHROPIC_API_KEY
 
+mcp_servers:
+  deepwiki_mcp:
+    url: "https://mcp.deepwiki.com/mcp"
+    transport: "http"
 
-litellm_settings:
-    callbacks: ["smtp_email"]
-  
+general_settings:
+  store_model_in_db: true
+  store_prompts_in_spend_logs: true
